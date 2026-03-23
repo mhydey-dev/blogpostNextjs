@@ -31,7 +31,7 @@ const handler = startServerAndCreateNextHandler<NextRequest>(server, {
       }
       return {};
     } catch (error) {
-      throw new Error();
+      return {};
     }
   },
 });

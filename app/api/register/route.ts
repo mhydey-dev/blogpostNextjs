@@ -12,12 +12,11 @@ export async function POST(request: Request) {
       const pretty = z.prettifyError(result.error);
       return Response.json(pretty, { status: 400 });
     }
-    const { name, email, password, age } = result.data;
+    const { name, email, password } = result.data;
     const newUser = await usermodel.create({
       name,
       email,
       password,
-      age: typeof age === "string" ? parseInt(age, 10) : age,
       role: "user",
     });
     return Response.json({
@@ -28,6 +27,9 @@ export async function POST(request: Request) {
     console.log(error, "errormessage");
     const message =
       error?.code === 11000 ? "Email already registered" : error?.message;
-    return Response.json({ message: message ?? "Registration failed" }, { status: 500 });
+    return Response.json(
+      { message: message ?? "Registration failed" },
+      { status: 500 },
+    );
   }
 }
