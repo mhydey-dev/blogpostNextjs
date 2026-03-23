@@ -4,15 +4,9 @@ import Link from "next/link";
 import { MdOutlineLibraryBooks } from "react-icons/md";
 import { MdOutlineDashboard } from "react-icons/md";
 import { PiSignInThin } from "react-icons/pi";
-const Navbar = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedUser = localStorage.getItem("user");
-      setIsAuthenticated(!!storedUser);
-    }
-  }, []);
+const Navbar = () => {
+  const isSignedIn = JSON.parse(localStorage.getItem("isSignedIn")!);
 
   return (
     <div className="flex items-center justify-between bg-white py-5 px-35">
@@ -29,7 +23,7 @@ const Navbar = () => {
         <p>Home</p>
         <p>Categories</p>
         <p>About</p>
-        {isAuthenticated ? (
+        {isSignedIn ? (
           <Link href="/dashboard">
             <button className="px-[20px] py-[8px] border rounded-[10px] text-[#fff] bg-gradient-to-r from-blue-500 to-purple-600 flex items-center gap-2">
               <MdOutlineDashboard size={"20px"} color="#fff" />

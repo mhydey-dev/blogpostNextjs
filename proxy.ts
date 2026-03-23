@@ -1,20 +1,29 @@
 import { NextResponse } from "next/server";
-import { NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 
-const protectedRoutes = ['/dashboard','/addblog']
+const protectedRoutes = ["/dashboard", "/blog", "/products"];
 
 export function proxy(req: NextRequest) {
   const path = req.nextUrl.pathname;
 
-  if (!protectedRoutes.some(route => path.startsWith(route))) {
+  // Check if the current path is a protected route
+  if (!protectedRoutes.some((route) => path.startsWith(route))) {
     return NextResponse.next();
   }
-  const cookie = req.cookies.get('auth_token');
-  const token = cookie?.value;
+
+  // Use req.cookies in middleware (not cookies() from next/headers)
+  const token = req.cookies.get("auth_token")?.value;
+
+  console.log("Auth token:", token);
 
   if (!token) {
-    const loginUrl = new URL('/login', req.url);
+    const loginUrl = new URL("/login", req.url);
     return NextResponse.redirect(loginUrl);
   }
+
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: ["/dashboard/:path*", "/blog/:path*", "/products/:path*"],
+};

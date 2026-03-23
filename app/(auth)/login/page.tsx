@@ -11,9 +11,12 @@ import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 import { MdOutlineLibraryBooks } from "react-icons/md";
 
 const LOGINUSER = gql`
-  mutation Login($email: String!, $password: String!) {
+  mutation Loginuser($email: String!, $password: String!) {
     loginuser(email: $email, password: $password) {
-      status
+      user {
+        email
+        name
+      }
       token
     }
   }
@@ -33,21 +36,38 @@ const Loginpage = () => {
 
   const LoginUser = async (value: LoginSchemaType) => {
     try {
-      const response = await loginuser({
+      const { data } = await loginuser({
         variables: {
           email: value.email,
           password: value.password,
         },
       });
-      if (response.data?.loginuser) {
-        if (typeof window !== "undefined") {
-          localStorage.setItem("user", JSON.stringify(response.data.loginuser));
-        }
+      console.log(data);
+
+      // if (response.data?.loginuser) {
+      //   if (typeof window !== "undefined") {
+      //     localStorage.setItem("user", JSON.stringify(response.data.loginuser));
+      //   }
+      //   router.push("/");
+      // }
+      const response = await fetch("http://localhost:3000/api/setcookies", {
+        method: "POST",
+        body: JSON.stringify({ token: data?.loginuser?.token }),
+      });
+      console.log(response);
+      if (response.status == 200) {
+        const obj = {
+          isAuthenticated: true,
+        };
+        localStorage.setItem("isSignedIn", JSON.stringify(obj));
         router.push("/");
       }
-    } catch (error: any) {
-      alert(error?.message ?? "Invalid email or password");
+    } catch (error) {
       console.log(error);
+
+      if (error instanceof Error) {
+        alert(error.message);
+      }
     }
   };
   return (

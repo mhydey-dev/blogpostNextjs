@@ -6,9 +6,11 @@ type user {
   role: String
   createdAt:String
 }
+
+
 type response{
-  status:String!
-  token:String
+  user:user!
+  token:String!
 }
 
 
@@ -17,9 +19,10 @@ type response{
  oneuser(id:ID):user
  }
 
+
  type Mutation{
   createuser(name: String!, email: String!,  role: String!, password:String!):user
   loginuser(email:String! , password:String!):response
  }
 
-` 
+`;

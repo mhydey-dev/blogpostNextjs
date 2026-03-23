@@ -7,32 +7,59 @@ import { MdOutlineLibraryBooks } from "react-icons/md";
 import { FiSearch, FiEdit2, FiExternalLink } from "react-icons/fi";
 import { MdOutlineLogout } from "react-icons/md";
 import { gql } from "graphql-tag";
-import { useQuery } from "@apollo/client/react";
+import { useQuery, useMutation } from "@apollo/client/react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
-
-
-
 const GET_BLOGS = gql`
-  query GetBlogs {
-    allblog {
+  query getblog($page: Int, $limit: Int) {
+    allblog(page: $page, limit: $limit) {
       id
       title
+      content
       author
+      excerpt
       category
       image
-      createdAt
     }
   }
 `;
 
+const GET_AUTHORS = gql`
+  query GetAuthors {
+    allauthor {
+      name
+    }
+  }
+`;
 
+const DELETE_BLOG = gql`
+  mutation DeleteBlog($id: ID!) {
+    deleteblog(id: $id) {
+      id
+    }
+  }
+`;
 
 const Dashboard = () => {
+  const [page, setPage] = useState(1);
   const [userName, setUserName] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const router = useRouter();
-  const { data, loading, error } = useQuery(GET_BLOGS);
+  const { data, loading, error } = useQuery(GET_BLOGS, {
+    variables: { limit: 2, page: page },
+  });
+
+  const nextpage = () => {
+    setPage(page + 1);
+  };
+  const {
+    data: authorsData,
+    loading: authorsLoading,
+    error: authorsError,
+  } = useQuery(GET_AUTHORS);
+  const [deleteBlog, { loading: deleteLoading, error: deleteError }] =
+    useMutation(DELETE_BLOG);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedUser = localStorage.getItem("user");
@@ -57,6 +84,34 @@ const Dashboard = () => {
         post.category?.toLowerCase().includes(term)
       );
     }) ?? [];
+
+  const handleLogout = async () => {
+    await fetch("/api/logout", {
+      method: "POST",
+      cache: "no-store",
+    });
+
+    localStorage.removeItem("isSignedIn");
+
+    router.push("/");
+  };
+
+  const handleDeleteBlog = async (id: string) => {
+    try {
+      const agree = prompt("Are you sure?, Enter 'yes' to continue.");
+      if (agree && agree?.toLowerCase() == "yes") {
+        await deleteBlog({
+          variables: {
+            id,
+          },
+          refetchQueries: [{ query: GET_BLOGS }, { query: GET_AUTHORS }],
+          awaitRefetchQueries: true,
+        });
+      }
+    } catch (error) {
+      console.warn("Cannot delete blog: ", error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -99,12 +154,7 @@ const Dashboard = () => {
 
             <button
               type="button"
-              onClick={() => {
-                if (typeof window !== "undefined") {
-                  localStorage.removeItem("user");
-                }
-                router.push("/");
-              }}
+              onClick={handleLogout}
               className="px-3 md:px-4 py-1.5 text-xs md:text-sm rounded-full border border-slate-200 text-slate-700 hover:bg-slate-100 transition"
             >
               <MdOutlineLogout />
@@ -120,7 +170,9 @@ const Dashboard = () => {
           <div className="rounded-2xl bg-white px-5 py-4 shadow-sm border border-slate-100 flex items-center justify-between">
             <div>
               <p className="text-xs text-slate-500 mb-1">Total Posts</p>
-              <p className="text-2xl font-semibold text-slate-900">{data?.allblog?.length}</p>
+              <p className="text-2xl font-semibold text-slate-900">
+                {data?.allblog?.length}
+              </p>
             </div>
             <span className="h-3 w-3 rounded-full bg-indigo-500" />
           </div>
@@ -134,7 +186,15 @@ const Dashboard = () => {
           <div className="rounded-2xl bg-white px-5 py-4 shadow-sm border border-slate-100 flex items-center justify-between">
             <div>
               <p className="text-xs text-slate-500 mb-1">Authors</p>
-              <p className="text-2xl font-semibold text-slate-900">{data?.allblog?.length}</p>
+              <p className="text-2xl font-semibold text-slate-900">
+                {authorsLoading ? (
+                  <>•••</>
+                ) : authorsError ? (
+                  <>❗</>
+                ) : (
+                  authorsData?.allauthor?.length
+                )}
+              </p>
             </div>
             <span className="h-3 w-3 rounded-full bg-pink-500" />
           </div>
@@ -162,6 +222,7 @@ const Dashboard = () => {
             <p className="text-xs text-slate-500">
               Showing {filteredBlogs.length} post
               {filteredBlogs.length === 1 ? "" : "s"}
+              <button onClick={nextpage}>Next</button>
             </p>
           </div>
 
@@ -241,11 +302,16 @@ const Dashboard = () => {
 
                       <td className="px-4 py-3">
                         <div className="flex justify-end items-center gap-3 text-slate-500">
-                          <button className="p-1.5 rounded-md hover:bg-slate-100">
-                            <FiEdit2 className="h-4 w-4" />
-                          </button>
-                          <button className="p-1.5 rounded-md hover:bg-slate-100">
-                          <RiDeleteBin6Line className="h-4 w-4"/>
+                          <Link href={`/editblog/${post.id}`}>
+                            <button className="p-1.5 rounded-md hover:bg-slate-100">
+                              <FiEdit2 className="h-4 w-4" />
+                            </button>
+                          </Link>
+                          <button
+                            className="p-1.5 rounded-md hover:bg-slate-100"
+                            onClick={() => handleDeleteBlog(post.id)}
+                          >
+                            <RiDeleteBin6Line className="h-4 w-4" />
                           </button>
                         </div>
                       </td>

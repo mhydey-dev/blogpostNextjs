@@ -5,6 +5,7 @@ import { useQuery } from "@apollo/client/react";
 import Image from "next/image";
 import { HiOutlineArrowRight } from "react-icons/hi";
 import touse from "../../public/to-use.jpg";
+import Link from "next/link";
 
 const ALL_BLOG = gql`
   query AllBlog {
@@ -92,7 +93,9 @@ export default function LatestArticles() {
           <h2 className="text-[28px] md:text-[32px] font-bold text-gray-900 mb-2">
             Latest Articles
           </h2>
-          <p className="text-red-600">Failed to load articles. Please try again later.</p>
+          <p className="text-red-600">
+            Failed to load articles. Please try again later.
+          </p>
         </div>
       </section>
     );
@@ -129,16 +132,17 @@ export default function LatestArticles() {
             {articles.map((article) => {
               const initial = article.author?.charAt(0)?.toUpperCase() ?? "?";
               const readTime = getReadTimeFromContent(article.content);
-              const imageSrc = article.image && article.image.startsWith("http")
-                ? article.image
-                : null;
+              const imageSrc =
+                article.image && article.image.startsWith("http")
+                  ? article.image
+                  : null;
 
               return (
                 <article
                   key={article.id}
                   className="group overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02]"
                 >
-                  <a href="#" className="block">
+                  <a className="block">
                     <div className="relative aspect-[16/10] overflow-hidden rounded-t-2xl">
                       {imageSrc ? (
                         <Image
@@ -188,7 +192,7 @@ export default function LatestArticles() {
                           </div>
                         </div>
                         <span className="text-gray-600 font-medium text-sm inline-flex items-center gap-1 group-hover:gap-2 transition-all">
-                          Read more
+                          <Link href={`/blogs/${article.id}`}>Read more</Link>
                           <HiOutlineArrowRight size={14} />
                         </span>
                       </div>

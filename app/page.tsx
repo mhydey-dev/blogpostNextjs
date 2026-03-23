@@ -7,12 +7,12 @@ import touse from "../public/to-use.jpg";
 import Navbar from "@/shared/navbar/page";
 import Footer from "@/shared/footer";
 import LatestArticles from "./components/LatestArticles";
+import Link from "next/link";
 
 const Landingpage = () => {
   return (
     <div>
       <Navbar />
-      {/* Hero */}
       <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 max-w-[1600px] mx-auto px-8 md:px-14 lg:px-[140px] py-16 md:py-20 flex flex-col gap-4">
         <div className="flex flex-col gap-2">
           <div className="px-3 py-2 items-center flex gap-1.5 border max-w-[260px] rounded-[20px] text-[#fff] bg-gradient-to-r from-blue-500 to-purple-600 text-sm font-medium">
@@ -39,27 +39,35 @@ const Landingpage = () => {
         </div>
       </div>
 
-      {/* Stats */}
       <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 px-8 md:px-14 lg:px-[280px] py-12 md:py-14 max-w-[1600px] mx-auto flex flex-wrap justify-between gap-8">
         <div className="flex flex-col items-center">
-          <span className="text-white text-[32px] md:text-[35px] font-bold">50K+</span>
+          <span className="text-white text-[32px] md:text-[35px] font-bold">
+            50K+
+          </span>
           <span className="text-white/80 text-sm md:text-base">Readers</span>
         </div>
         <div className="flex flex-col items-center">
-          <span className="text-white text-[32px] md:text-[35px] font-bold">6+</span>
+          <span className="text-white text-[32px] md:text-[35px] font-bold">
+            6+
+          </span>
           <span className="text-white/80 text-sm md:text-base">Articles</span>
         </div>
         <div className="flex flex-col items-center">
-          <span className="text-white text-[32px] md:text-[35px] font-bold">25+</span>
+          <span className="text-white text-[32px] md:text-[35px] font-bold">
+            25+
+          </span>
           <span className="text-white/80 text-sm md:text-base">Writers</span>
         </div>
         <div className="flex flex-col items-center">
-          <span className="text-white text-[32px] md:text-[35px] font-bold">98%</span>
-          <span className="text-white/80 text-sm md:text-base">Satisfaction</span>
+          <span className="text-white text-[32px] md:text-[35px] font-bold">
+            98%
+          </span>
+          <span className="text-white/80 text-sm md:text-base">
+            Satisfaction
+          </span>
         </div>
       </div>
 
-      {/* Featured Article */}
       <section className="max-w-[1600px] mx-auto px-8 md:px-14 lg:px-[140px] py-16 md:py-20">
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 rounded-2xl overflow-hidden bg-white border border-gray-100 shadow-sm">
           <div className="w-full lg:w-[50%] relative min-h-[300px">
@@ -89,21 +97,22 @@ const Landingpage = () => {
               </div>
               <div>
                 <p className="font-medium text-gray-900">Sarah Johnson</p>
-                <p className="text-sm text-gray-500">Feb 3, 2026 • 10 min read</p>
+                <p className="text-sm text-gray-500">
+                  Feb 3, 2026 • 10 min read
+                </p>
               </div>
             </div>
-            <a
-              href="#"
+            <Link
+              href={"/"}
               className="inline-flex items-center gap-2 text-blue-600 font-semibold mt-2 hover:gap-3 transition-all"
             >
               Read Full Article
               <HiOutlineArrowRight size={18} />
-            </a>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Why Readers Love Us */}
       <section className="bg-gray-50/80 max-w-[1600px] mx-auto px-8 md:px-14 lg:px-[140px] py-16 md:py-20">
         <div className="flex flex-col gap-12 bg-accent/30">
           <div className="text-center max-w-2xl mx-auto">
