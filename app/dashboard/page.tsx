@@ -9,7 +9,28 @@ import { MdOutlineLogout } from "react-icons/md";
 import { gql } from "graphql-tag";
 import { useQuery, useMutation } from "@apollo/client/react";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { string } from "zod";
 
+type GET_BLOGresponse = {
+  allblog: [
+    {
+      id: string;
+      title: string;
+      author: string;
+      content: string;
+      category: string;
+      date?: string;
+      image: string;
+    },
+  ];
+};
+type GET_Authorresponse = {
+  allauthor: [
+    {
+      name: string;
+    },
+  ];
+};
 const GET_BLOGS = gql`
   query getblog($page: Int, $limit: Int) {
     allblog(page: $page, limit: $limit) {
@@ -45,7 +66,7 @@ const Dashboard = () => {
   const [userName, setUserName] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const router = useRouter();
-  const { data, loading, error } = useQuery(GET_BLOGS, {
+  const { data, loading, error } = useQuery<GET_BLOGresponse>(GET_BLOGS, {
     variables: { limit: 2, page: page },
   });
 
@@ -56,7 +77,7 @@ const Dashboard = () => {
     data: authorsData,
     loading: authorsLoading,
     error: authorsError,
-  } = useQuery(GET_AUTHORS);
+  } = useQuery<GET_Authorresponse>(GET_AUTHORS);
   const [deleteBlog, { loading: deleteLoading, error: deleteError }] =
     useMutation(DELETE_BLOG);
 
