@@ -2,7 +2,7 @@ import blogmodel from "../database/model/blog.model";
 import cloudinary from "../lib/cloudinary";
 
 type contexttype = {
-  user: {
+  user?: {
     email: string;
     id: string;
     iat: number;
@@ -10,20 +10,23 @@ type contexttype = {
 };
 
 type blog = {
-  title: String;
-  content: String;
-  excerpt: String;
-  author: String;
-  category: String;
-  image: String;
-  createdAt: String;
+  title: string;
+  content: string;
+  excerpt: string;
+  author: string;
+  category: string;
+  image: string;
+  createdAt: string;
 };
 
 type editblog = blog & { id: string };
 
 export const blogresolvers = {
   Query: {
-    allblog: async (_, { page, limit }: { page: number; limit: number }) => {
+    allblog: async (
+      _: unknown,
+      { page, limit }: { page: number; limit: number },
+    ) => {
       console.log(page);
       console.log(limit);
 
@@ -47,7 +50,7 @@ export const blogresolvers = {
       }));
     },
 
-    blog: async (_, param: { id: string }) => {
+    blog: async (_: unknown, param: { id: string }) => {
       return await blogmodel.findById(param.id);
     },
 
@@ -69,7 +72,7 @@ export const blogresolvers = {
   },
 
   Mutation: {
-    addblog: async (_, param: blog, context: contexttype) => {
+    addblog: async (_: unknown, param: blog, context: contexttype) => {
       try {
         const { user } = context;
         console.log(user);
@@ -98,7 +101,7 @@ export const blogresolvers = {
       }
     },
 
-    editblog: async (_, param: editblog, context: contexttype) => {
+    editblog: async (_: unknown, param: editblog, context: contexttype) => {
       try {
         const { user } = context;
         console.log(user);
@@ -141,7 +144,7 @@ export const blogresolvers = {
       }
     },
 
-    deleteblog: async (_, param: { id: string }) => {
+    deleteblog: async (_: unknown, param: { id: string }) => {
       try {
         await blogmodel.findByIdAndDelete(param.id);
         return param;

@@ -10,8 +10,12 @@ const server = new ApolloServer({
   resolvers,
 });
 
+interface Context {
+  user?: string | jwt.JwtPayload;
+}
+
 const handler = startServerAndCreateNextHandler<NextRequest>(server, {
-  context: async (req) => {
+  context: async (req): Promise<Context> => {
     try {
       const cookie = req.headers
         .get("cookie")
@@ -25,6 +29,7 @@ const handler = startServerAndCreateNextHandler<NextRequest>(server, {
       if (verifieduser) {
         return { user: verifieduser };
       }
+      return {};
     } catch (error) {
       throw new Error();
     }

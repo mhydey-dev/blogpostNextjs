@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { LoginSchema, LoginSchemaType } from "@/lib/schema";
+import { LoginSchema } from "@/lib/schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -9,18 +9,18 @@ import { gql } from "@apollo/client";
 import Link from "next/link";
 import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 import { MdOutlineLibraryBooks } from "react-icons/md";
-import {json, z} from zod;
+import { json, z } from "zod";
 
-type LoginSchemaType = z.infer<typeof LoginSchema>
+type LoginSchemaType = z.infer<typeof LoginSchema>;
 
-interface LoginUserResponse{
-  loginuser:{
-    token: string
-    user:{
-      email: string
-      name: string
-    }
-  }
+interface LoginUserResponse {
+  loginuser: {
+    token: string;
+    user: {
+      email: string;
+      name: string;
+    };
+  };
 }
 
 const LOGINUSER = gql`
@@ -66,7 +66,7 @@ const Loginpage = () => {
       // }
       const response = await fetch("http://localhost:3000/api/setcookies", {
         method: "POST",
-        body: JSON.stringify({ token: data?.Loginuser?.token }),
+        body: JSON.stringify({ token: data?.loginuser?.token }),
       });
       console.log(response);
       if (response.status == 200) {
